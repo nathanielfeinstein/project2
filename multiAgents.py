@@ -278,7 +278,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
       a = max(a, new_score)
 
     return best_score, best_action
-
+  
   # min layers function
   def getMin(self, state, depth, index, a, b):
     all_actions = state.getLegalActions(index)
