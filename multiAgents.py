@@ -301,31 +301,87 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
     return best_score, best_action   
 
+
 class ExpectimaxAgent(MultiAgentSearchAgent):
   """
     Your expectimax agent (question 4)
   """
 
-  def getAction(self, gameState):
-    """
-      Returns the expectimax action using self.depth and self.evaluationFunction
 
-      All ghosts should be modeled as choosing uniformly at random from their
-      legal moves.
+def getAction(self, gameState):
+
     """
+
+      Returns the minimax action using self.depth and self.evaluationFunction
+
+    """
+
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
-def betterEvaluationFunction(currentGameState):
-  """
-    Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
-    evaluation function (question 5).
+    return self.minimax(gameState, 0, 0)[1]
 
-    DESCRIPTION: <write something here so we know what you did>
-  """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  # function to iterate through minimax tree or end search
 
+  def minimax (self, state, depth, index):
+    if index >= state.getNumAgents():
+      index = 0
+      depth = depth + 1
+
+    if state.isWin() or state.isLose() or depth == self.depth:
+      return self.evaluationFunction(state), Directions.STOP
+    # call max function
+    if index == 0:
+      score, action = self.getMax(state, depth, index)
+
+    # call min function
+    else:
+      score, action = self.getMin(state, depth, index)
+    # return the best move with the highest score for pacman
+    return score, action
+  # max layers function
+
+  def getMax(self, state, depth, index):
+
+    all_actions = state.getLegalActions(index)
+    if not all_actions:
+      return self.evaluationFunction(state), Directions.STOP
+
+    best_action = Directions.STOP
+    best_score = -float('inf')
+ 
+    for action in all_actions:
+      new_state = state.generateSuccessor(index, action)
+      new_score, new_action = self.minimax(new_state, depth, index+1)
+
+      if new_score > best_score:
+        best_score = new_score
+        best_action = action
+    return best_score, best_action
+
+  # min layers function
+
+  def getMin(self, state, depth, index):
+  
+    all_actions = state.getLegalActions(index)
+    best_action = Directions.STOP
+    best_score = float('inf')
+
+    for action in all_actions:
+      prob = 1.0/len(all_actions)
+      new_state = state.generateSuccessor(index, action)
+      new_score, new_action = self.minimax(new_state, depth, index+1)
+      
+      new_score += new_score*prob
+      if new_score < best_score:
+        best_score = new_score
+        best_action = action
+
+      if new_score < a:
+        return new_score, best_action
+      
+      b = min(b, new_score)
+    return best_score, best_action 
+ 
 # Abbreviation
 better = betterEvaluationFunction
 
@@ -344,4 +400,5 @@ class ContestAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
